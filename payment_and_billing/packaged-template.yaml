@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Globals:
+  Function:
+    Runtime: python3.9
+    MemorySize: 128
+    Timeout: 100
+    Tracing: Active
+Resources:
+  PaymentMethodsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: PaymentMethods
+      AttributeDefinitions:
+      - AttributeName: paymentMethodId
+        AttributeType: S
+      KeySchema:
+      - AttributeName: paymentMethodId
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+  BillingTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Billing
+      AttributeDefinitions:
+      - AttributeName: billingId
+        AttributeType: S
+      KeySchema:
+      - AttributeName: billingId
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+  AddPaymentMethodFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: add_payment_method.lambda_handler
+      CodeUri: s3://my-payment-billing-bucket/d78b1e19cebac041afe070f7323e953d
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: PaymentMethodsTable
+      Events:
+        AddPaymentMethodApi:
+          Type: Api
+          Properties:
+            Path: /payment-methods
+            Method: POST
+  CreateBillingRecordFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: create_billing_record.lambda_handler
+      CodeUri: s3://my-payment-billing-bucket/d78b1e19cebac041afe070f7323e953d
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: BillingTable
+      Events:
+        CreateBillingRecordApi:
+          Type: Api
+          Properties:
+            Path: /billing
+            Method: POST
