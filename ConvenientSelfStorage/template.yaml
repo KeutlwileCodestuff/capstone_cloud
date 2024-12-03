@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Runtime: python3.9
+    MemorySize: 128
+    Timeout: 100
+    Tracing: Active
+
+Resources:
+  StorageUnitsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: StorageUnits
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  StorageBookingsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: StorageBookings
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+  
+  ListStorageUnitsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: list_storage_units.lambda_handler
+      Runtime: python3.9
+      CodeUri: src/api/storage/list
+      Environment:
+        Variables:
+          TABLE_NAME: StorageUnits
+      Events:
+        GetUnits:
+          Type: Api
+          Properties:
+            Path: /storage/units
+            Method: get
+
+  BookStorageUnitFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: booking.lambda_handler
+      Runtime: python3.9
+      CodeUri: src/api/storage/book
+      Environment:
+        Variables:
+          UNITS_TABLE: StorageUnits
+          BOOKINGS_TABLE: StorageBookings
+      Events:
+        PostBooking:
+          Type: Api
+          Properties:
+            Path: /storage/units/book
+            Method: post
+
