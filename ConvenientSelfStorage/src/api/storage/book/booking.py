@@ -17,13 +17,13 @@ def lambda_handler(event, context):
     start_date = body.get('start_date')
     end_date = body.get('end_date')
     payment_method = body.get('payment_method')
-    
+
     if not (unit_id and customer_id and start_date and end_date and payment_method):
         return {
             'statusCode': 400,
             'body': json.dumps({'error': 'Missing required fields'})
         }
-    
+
     try:
         # Validate dates
         start = datetime.strptime(start_date, '%Y-%m-%d')
@@ -33,7 +33,7 @@ def lambda_handler(event, context):
                 'statusCode': 400,
                 'body': json.dumps({'error': 'Invalid date range'})
             }
-        
+
         # Check unit availability
         units_table = dynamodb.Table(UNITS_TABLE)
         unit = units_table.get_item(Key={'id': unit_id}).get('Item')
@@ -42,7 +42,7 @@ def lambda_handler(event, context):
                 'statusCode': 400,
                 'body': json.dumps({'error': 'Unit not available'})
             }
-        
+
         # Create a booking
         bookings_table = dynamodb.Table(BOOKINGS_TABLE)
         booking_id = str(uuid4())
@@ -56,7 +56,7 @@ def lambda_handler(event, context):
             'status': 'Confirmed'
         }
         bookings_table.put_item(Item=booking)
-        
+
         # Update unit status
         units_table.update_item(
             Key={'id': unit_id},
@@ -64,7 +64,7 @@ def lambda_handler(event, context):
             ExpressionAttributeNames={'#status': 'status'},
             ExpressionAttributeValues={':status': 'Reserved'}
         )
-        
+
         # Return success response
         return {
             'statusCode': 200,

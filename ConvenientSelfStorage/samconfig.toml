@@ -1,8 +1,10 @@
 version = 0.1
 [default.deploy.parameters]
-stack_name = "storage-solution"
+stack_name = "serverless-convenient-self-storage"
 resolve_s3 = true
-s3_prefix = "storage-solution"
+s3_prefix = "serverless-convenient-self-storage"
 region = "eu-west-1"
 capabilities = "CAPABILITY_IAM"
 image_repositories = []
+confirm_changeset = true
+disable_rollback = true
