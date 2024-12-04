@@ -43,10 +43,60 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Prod
+      DefinitionBody:
+        openapi: 3.0.1
+        info:
+          title: Storage API
+          description: API for managing storage units
+          version: '1.0'
+        paths:
+          /storage/units/book:
+            post:
+              x-amazon-apigateway-integration:
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${BookStorageUnitFunction.Arn}/invocations"
+                httpMethod: POST
+                type: "AWS_PROXY"
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/ApplicationJsonModel"
+              responses:
+                '200':
+                  description: Success
+                '400':
+                  description: Client error
+                '500':
+                  description: Server error
+        components:
+          schemas:
+            ApplicationJsonModel:
+              type: object
+              properties:
+                unit_id:
+                  type: string
+                customer_id:
+                  type: string
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                payment_method:
+                  type: string
+              required:
+                - unit_id
+                - customer_id
+                - start_date
+                - end_date
+                - payment_method
       TracingEnabled: true
       Tags:
         Name: !Sub "${AWS::StackName}-API"
         Stack: !Sub "${AWS::StackName}"
+
   
   ListStorageUnitsFunction:
     Type: AWS::Serverless::Function
@@ -75,6 +125,19 @@ Resources:
         Variables:
           UNITS_TABLE: StorageUnits
           BOOKINGS_TABLE: StorageBookings
+      Policies:
+      - Statement:
+          Effect: Allow
+          Action:
+            - dynamodb:GetItem
+          Resource: 
+            - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/StorageUnits"
+      - Statement:
+          Effect: Allow
+          Action:
+            - dynamodb:PutItem
+          Resource: 
+            - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/StorageBookings"
       Events:
         PostBooking:
           Type: Api
@@ -82,6 +145,9 @@ Resources:
             RestApiId: !Ref RestAPI
             Path: /storage/units/book
             Method: post
+            RequestModel:
+              Model: ApplicationJsonModel
+              Required: true
   
   UserPool:
     Type: AWS::Cognito::UserPool
