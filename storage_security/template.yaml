@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Resources:
+  StorageUnitsTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: 'StorageUnits'
+      AttributeDefinitions:
+        - AttributeName: 'unit_id'
+          AttributeType: 'S'
+      KeySchema:
+        - AttributeName: 'unit_id'
+          KeyType: 'HASH'
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  # Lambda function to unlock unit
+  UnlockUnitFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: 'lambda_functions.unlockUnit.lambda_handler'
+      Runtime: 'python3.9'
+      CodeUri: ./backend/lambda_functions
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref StorageUnitsTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /unlockUnit
+            Method: post
+
+  # Lambda function to share access to unit
+  ShareAccessFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: 'lambda_functions.shareAccess.lambda_handler'
+      Runtime: 'python3.9'
+      CodeUri: ./backend/lambda_functions
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref StorageUnitsTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /shareAccess
+            Method: post
+
+  # Lambda function to send notifications
+  SendNotificationFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: 'lambda_functions.sendNotification.lambda_handler'
+      Runtime: 'python3.9'
+      CodeUri: ./backend/lambda_functions
+      Environment:
+        Variables:
+          SES_EMAIL: 'your_verified_email@example.com'  # Replace with actual verified SES email
+
+  # API Gateway for Lambda functions
+  ApiGateway:
+    Type: 'AWS::ApiGateway::RestApi'
+    Properties:
+      Name: 'StorageSecurityAPI'
+
+Outputs:
+  ApiUrl:
+    Value: !Sub 'https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/'
+    Description: 'API Gateway endpoint URL'
