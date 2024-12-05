@@ -8,6 +8,7 @@ def lambda_handler(event, context):
     body = json.loads(event.get('body', '{}'))
 
     unit_id = body.get('unit_id')
+    customer_id = body.get('customer_id')
     start_date = body.get('start_date')
     end_date = body.get('end_date')
     payment_method = body.get('payment_method')
@@ -22,13 +23,15 @@ def lambda_handler(event, context):
         allowed = overSixMonths(start_date , end_date)
         if allowed:
             return{
-                'statusCode':200,
-                'body': json.dumps({
-                'message': 'Storage unit cancelled successfully',
-                'unit_id': unit_id,
-                'start_date': start_date,
-                'end_date': end_date})
-            }
+                    'statusCode': 200,
+                    'body': json.dumps({
+                        'message': 'Storage unit cancelled successfully',
+                        'unit_id': unit_id,
+                        'customer_id': customer_id,
+                        'start_date': start_date,
+                        'end_date': end_date
+            })
+        }
 
         else:
             return{
