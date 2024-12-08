@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Support</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="images/logo.jpg" alt="SpaceSafe Logo" width="80px" height="50px">
+        </div>
+        <div class="heading" >SpaceSafe</div>
+        <nav>
+            <a href="#">About Us</a>
+            <a href="#">Contact Us</a>
+            <a href="storage_location.html">Locations</a>
+            <a class="login_btn" href="login_signup_form.html">Login</a>
+        </nav>
+    </header>
+    <h1 class="customer_heading">Customer Support</h1>
+    <table>
+        <tr>
+            <th>Storage Unit</th>
+            <th>Unit 1</th>
+            <th>Unit 2</th>
+            <th>Unit 3</th>
+            <th>Unit 4</th>
+            <th>Unit 5</th>
+        </tr>
+        <tr>
+            <td>Rosebank</td>
+            <td>
+                <select class="dropdown status-available" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+            <td>
+                <select class="dropdown status-cancelling" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+            <td>
+                <select class="dropdown status-reserved" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+            <td>
+                <select class="dropdown status-problem" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+            <td>
+                <select class="dropdown status-available" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+
+            
+        </tr>
+        <!-- melrose -->
+        <tr>
+            <td>Melrose</td>
+            <td>
+                <select class="dropdown status-available" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+            <td>
+                <select class="dropdown status-cancelling" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+            <td>
+                <select class="dropdown status-reserved" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+            <td>
+                <select class="dropdown status-problem" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+            <td>
+                <select class="dropdown status-available" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+
+            
+        </tr>
+
+        <!-- Century city -->
+        <tr>
+            <td>Century City</td>
+            <td>
+                <select class="dropdown status-available" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+            <td>
+                <select class="dropdown status-cancelling" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+            <td>
+                <select class="dropdown status-reserved" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+            <td>
+                <select class="dropdown status-problem" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+            <td>
+                <select class="dropdown status-available" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+
+            
+        </tr>
+
+        <!-- Maynard mall -->
+        <tr>
+            <td>Maynard Mall</td>
+            <td>
+                <select class="dropdown status-available" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+            <td>
+                <select class="dropdown status-cancelling" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+            <td>
+                <select class="dropdown status-reserved" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+            <td>
+                <select class="dropdown status-problem" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+            <td>
+                <select class="dropdown status-available" onchange="updateStatus(this)">
+                    <option value="available" class="status-available">Available</option>
+                    <option value="reserved" class="status-reserved">Reserved</option>
+                    <option value="cancelling" class="status-cancelling">Cancelling</option>
+                    <option value="problem" class="status-problem">Problem</option>
+                    <option value="unavailable" class="status-unavailable">Unavailable</option>
+                </select>
+            </td>
+
+            
+        </tr>
+    </table>
+
+    <script>
+        function updateStatus(dropdown) {
+            // Remove existing status class
+            dropdown.className = "dropdown";
+
+            // Get selected status value
+            const status = dropdown.value;
+
+            // Add the corresponding class to the dropdown
+            if (status === "available") {
+                dropdown.classList.add("status-available");
+            } else if (status === "reserved") {
+                dropdown.classList.add("status-reserved");
+            } else if (status === "cancelling") {
+                dropdown.classList.add("status-cancelling");
+            } else if (status === "problem") {
+                dropdown.classList.add("status-problem");
+            } else if (status === "unavailable") {
+                dropdown.classList.add("status-unavailable");
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,351 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* nav styles */
+header {
+    background-color: #f4f4f4;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.heading{
+    color: #4992eb;
+    margin-left: -750px;
+    font-size: 24px;
+}
+nav a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #000;
+}
+.login_btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+/* end of nav styles */
+
+/* rental management && booking styles */
+.container {
+    margin: 20px auto;
+    width: 50%;
+}
+.container h1 {
+    color: #4992eb;
+}
+
+.form-container {
+    background-color: #eee;
+    padding: 20px;
+    border-radius: 10px;
+}
+input {
+    width: 90%;
+    margin: 10px 0;
+    padding: 8px;
+}
+button{
+    background-color: #4992eb;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #0056b3;
+}
+.note {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: gray;
+}
+/* end of rental management && booking styles */
+
+
+
+/* customer support styles */
+.customer_heading {
+    color: #4992eb;
+   
+}
+
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+th {
+    background-color: #f4f4f4;
+}
+.dropdown {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+}
+.status-available {
+    color: green;
+}
+.status-reserved {
+    color: orange;
+}
+.status-cancelling {
+    color: purple;
+}
+.status-problem {
+    color: red;
+}
+.status-unavailable {
+    color: gray;
+}
+
+/* end of customer support style */
+
+/* homepage styles */
+.hero {
+    position: relative;
+    text-align: center;
+    color: white;
+}
+.hero img {
+    width: 100%;
+    height: 250px;
+    opacity: 0.7;
+}
+.hero h1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-left: -400px; /* Adjusted to move right */
+    margin-top: -20px; /* Adjusted to move down */
+    color: white;
+}
+    
+.hero h2{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-left: -400px; /* Adjusted to move right */
+    margin-top: -65px; /* Adjusted to move down */
+    color: #b1cdee;
+}
+
+.hero p {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-left: -400px; /* Adjusted to move right */
+    margin-top: 20px; /* Adjusted to move down */
+}
+
+.hero .book-now {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin-left: -410px; /* Adjust to align with other elements */
+    margin-top: 60px; /* Adjust to position below the paragraph */
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: white;
+    background-color: #4992eb;
+    border: none;
+    border-radius: 50px; /* Round borders */
+    cursor: pointer;
+    width: 250px; /* Adjust width */
+    text-align: center; /* Center text */
+}
+
+.benefits {
+    text-align: center;
+    margin-top: 20px; /* Adjust as needed */
+}
+
+.benefits h3 {
+    font-size: 1.5rem;
+    color: #3e5067;
+    margin-bottom: 10px;
+}
+
+.benefits p{
+    font-size: 1rem;
+    color: #3e5067;
+}
+
+.benefits .why-choose-us {
+    font-size: 1rem;
+    color: #3e5067;
+    margin-top: 10px; /* Adjust as needed */
+}
+
+.benefits .icons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 40px; /* Adjust as needed */
+}
+
+.benefits .icon {
+    text-align: center;
+}
+
+.benefits .icon img {
+    width: 50px; /* Adjust as needed */
+    height: 50px; /* Adjust as needed */
+}
+
+.benefits .icon p {
+    margin-top: 10px; /* Adjust as needed */
+    font-size: 20px;
+    color: #3e5067;
+}
+/* end of homepage styles */
+
+/* payment page styles */
+.payment_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f8ff;
+  
+}
+.payment-box {
+    background-color: #4992eb;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+    margin-bottom: 100px;
+}
+.payment-box h1 {
+    margin-bottom: 20px;
+}
+.payment-option {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: white;
+    color: #0288d1;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 15px;
+}
+.payment-option img {
+    height: 30px;
+    margin-right: 10px;
+}
+.payment-box button {
+    background-color: white;
+    color: #0288d1;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.payment-box button:hover {
+    background-color: #e1f5fe;
+}
+
+/* end of payment page styles */
+
+/* storage location styles */
+.location_container {
+    padding: 20px;
+    align-items: center;
+}
+
+h1, h2 {
+    color: #333;
+}
+.location-section {
+    margin-bottom: 30px;
+    width: 300px;
+   
+}
+
+.location-section h2{
+    margin-left: 300px;
+}
+.location-box {
+    background-color: #e0f7fa;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    flex: 1;
+    margin: 10px;
+    width: 50px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for a modern look */
+}
+.location-box a {
+    display: block;
+    margin-top: 10px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.reservation-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.reservation-container img {
+    margin-right: 10px;
+}
+
+a.reservations {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+a.reservations:hover {
+    background-color: #0056b3;
+}
+
+.location-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    width: 650px;
+    margin-left: 300px;
+ 
+    
+}
+
+
+
+/* end of storage location styles */
