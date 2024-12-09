@@ -20,8 +20,16 @@ def lambda_handler(event, context):
         allowed = overSixMonths(start_date , end_date)
         if allowed:
             return{
-                'response':200
-            }
+                    'statusCode': 200,
+                    'body': json.dumps({
+                        'message': 'Storage unit cancelled successfully',
+                        'unit_id': unit_id,
+                        'customer_id': customer_id,
+                        'start_date': start_date,
+                        'end_date': end_date
+            })
+        }
+
         else:
             return{
                 'statusCode':403,
@@ -45,15 +53,3 @@ def overSixMonths(start_date , end_date):
         return False
     else:
         return True
-
-        #     return{
-        #             'statusCode': 200,
-        #             'body': json.dumps({
-        #                 'message': 'Storage unit cancelled successfully',
-        #                 'unit_id': unit_id,
-        #                 'customer_id': customer_id,
-        #                 'start_date': start_date,
-        #                 'end_date': end_date
-        #     })
-        # }
-       
