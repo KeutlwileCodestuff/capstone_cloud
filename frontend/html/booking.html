@@ -25,14 +25,16 @@
             <h2>Select Your Location and Unit:</h2>
             <form id="bookingForm">
                 <!-- Location Dropdown -->
-                <label for="location">Select Location:</label>
-                <select id="location" name="location" required>
-                    <option value="" disabled selected>Select a Location</option>
-                    <option value="Century City">Century City</option>
-                    <option value="Maynard Mall, Wynberg">Maynard Mall, Wynberg</option>
-                    <option value="Melrose">Melrose</option>
-                    <option value="Rosebank">Rosebank</option>
-                </select><br>
+                <div class="centered-container">
+                    <label for="location">Select Location:</label>
+                    <select id="location" name="location" required>
+                        <option value="" disabled selected>Select a Location</option>
+                        <option value="Century City">Century City</option>
+                        <option value="Maynard Mall, Wynberg">Maynard Mall, Wynberg</option>
+                        <option value="Melrose">Melrose</option>
+                        <option value="Rosebank">Rosebank</option>
+                    </select><br>
+                </div>
 
                 <!-- Unit Selection -->
                 <div id="unit-selection" style="display: none;">
@@ -55,14 +57,38 @@
                     </div>
                 </div>
 
-                <!-- Contact Information -->               
-                <input type="text" id="name" placeholder="Your Name" required><br>             
-                <input type="text" id="surname" placeholder="Your Surname" required><br>            
-                <input type="email" id="email" placeholder="Your Email" required><br>               
+                <!-- Contact Information -->   
+                <label for="name">Name:</label>
+                <input type="text" id="name" placeholder="Your Name" required><br> 
+                <label for="surname">Surname:</label>            
+                <input type="text" id="surname" placeholder="Your Surname" required><br>   
+                <label for="email">Email:</label>         
+                <input type="email" id="email" placeholder="Your Email" required><br>  
+                <label for="phonenumber">Phone number:</label>
                 <input type="tel" id="phone" placeholder="Your Phone Number" required><br>
 
+                <!-- Additional Booking Information -->
+                <label for="unit_id">Unit ID:</label>
+                <input type="text" id="unit_id" name="unit_id" required><br><br>
+
+                <label for="customer_id">Customer ID:</label>
+                <input type="text" id="customer_id" name="customer_id" required><br><br>
+
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date" name="start_date" required><br><br>
+
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date" required><br><br>
+
+                <label for="payment_method">Payment Method:</label>
+                <select id="payment_method" name="payment_method" required>
+                    <option value="card">Card</option>
+                    <option value="eft">EFT</option>
+                    <option value="apple_pay">Apple Pay</option>
+                </select><br><br>
+
                 <!-- Submit and Cancel Buttons -->
-                <button type="button" id="submitBtn">Submit</button>
+                <button type="submit" id="submitBtn">Book Now</button>
                 <button type="button" id="cancelBtn">Cancel</button>
             </form>
             <p class="note">NB: Availability is subject to confirmation.</p>
@@ -70,36 +96,39 @@
     </div>
 
     <script>
-        const bookingForm = document.getElementById('bookingForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
-    
-        submitBtn.addEventListener('click', () => {
-            // Capture form data
-            const bookingData = {
-                location: bookingForm.location.value,
-                unit: bookingForm.unit.value,
-                name: bookingForm.name.value,
-                surname: bookingForm.surname.value,
-                email: bookingForm.email.value,
-                phone: bookingForm.phone.value,
-            };
-    
-            // Convert the data to JSON
-            const jsonData = JSON.stringify(bookingData, null, 2);
-    
-            // Create a Blob and a download link
-            const blob = new Blob([jsonData], { type: 'application/json' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'bookings.json'; // Name of the file
-    
-            // Trigger the download
-            link.click();
-    
-            // Alert confirmation
-            alert('Booking Confirmed');
+        document.getElementById('bookingForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const unit_id = document.querySelector('input[name="unit"]:checked').value;
+            const customer_id = 'some-customer-id'; // Replace with actual customer ID logic
+            const start_date = document.getElementById('start_date').value;
+            const end_date = document.getElementById('end_date').value;
+            const payment_method = document.getElementById('payment_method').value;
+
+            const response = await fetch('https://your-api-endpoint/book', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}` // Ensure userToken is set
+                },
+                body: JSON.stringify({ unit_id, customer_id, start_date, end_date, payment_method })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert('Booking successful! Booking ID: ' + data.booking_id);
+            } else {
+                alert('Error: ' + data.error);
+            }
         });
+
+        // Show unit selection when location is selected
+        document.getElementById('location').addEventListener('change', function() {
+            document.getElementById('unit-selection').style.display = 'block';
+        });
+
+        const bookingForm = document.getElementById('bookingForm');
+        const cancelBtn = document.getElementById('cancelBtn');
     
         cancelBtn.addEventListener('click', () => {
             // Reset the form fields

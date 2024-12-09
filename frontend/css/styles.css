@@ -68,6 +68,31 @@ button:hover {
     font-size: 0.9em;
     color: gray;
 }
+
+#bookingForm label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px; /* Optional: Adds some space between the label and the input */
+}
+
+#bookingForm input,
+#bookingForm select {
+    display: block;
+  
+}
+
+.centered-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.centered-container label,
+.centered-container select {
+    width: 100%;
+    max-width: 300px;
+}
 /* end of rental management && booking styles */
 
 
@@ -227,6 +252,11 @@ th {
 /* end of homepage styles */
 
 /* payment page styles */
+.hidden {
+    display: none;
+  }
+  
+
 .payment_container {
     display: flex;
     justify-content: center;

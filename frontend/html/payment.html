@@ -11,7 +11,7 @@
         <div class="logo">
             <img src="images/logo.jpg" alt="SpaceSafe Logo" width="80px" height="50px">
         </div>
-        <div class="heading" >SpaceSafe</div>
+        <div class="heading">SpaceSafe</div>
         <nav>
             <a href="#">About Us</a>
             <a href="#">Contact Us</a>
@@ -23,21 +23,98 @@
     <div class="payment_container">
         <div class="payment-box">
             <h1>Payment</h1>
-            <div class="payment-option">
-                <span>Card</span>
-                <img src="images/image(5).png" alt="VISA">
-                <img src="images/image(4).png" alt="Mastercard">
-            </div>
-            <div class="payment-option">
-                <span>Pay with</span>
-                <img src="images/image(3).png" alt="Apple Pay">
-            </div>
-            <div class="payment-option">
-                <span>Instant EFT</span>
-                <img src="images/image(2).png" alt="Instant EFT">
-            </div>
-            <button>Pay Now</button>
+            <form id="paymentForm">
+                <div class="payment-option">
+                    <label for="paymentType">Payment Type:</label>
+                    <select id="paymentType" name="paymentType" required>
+                        <option value="">Select Payment Method</option>
+                        <option value="Card">Card</option>
+                        <option value="Apple Pay">Apple Pay</option>
+                        <option value="Instant EFT">Instant EFT</option>
+                    </select>
+                </div>
+
+                <!-- Card Payment Details -->
+                <div id="cardDetails" class="payment-details hidden">
+                    <label for="cardNumber">Card Number:</label>
+                    <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                    
+                    <label for="expiryDate">Expiry Date:</label>
+                    <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" maxlength="5">
+                    
+                    <label for="cvv">CVV:</label>
+                    <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="3">
+                </div>
+
+                <!-- Apple Pay Details -->
+                <div id="applePayDetails" class="payment-details hidden">
+                    <p>Authenticate via your Apple device to complete the payment.</p>
+                </div>
+
+                <!-- EFT Payment Details -->
+                <div id="eftDetails" class="payment-details hidden">
+                    <p>Use the following details to complete your EFT:</p>
+                    <p><strong>Bank Name:</strong> Example Bank</p>
+                    <p><strong>Account Number:</strong> 123456789</p>
+                    <p><strong>Branch Code:</strong> 123-456</p>
+                    <p><strong>Reference Number:</strong> REF12345</p>
+                </div>
+
+                <button type="submit">Pay Now</button>
+            </form>
         </div>
     </div>
+
+    <script>
+        const paymentTypeSelect = document.getElementById('paymentType');
+        const cardDetails = document.getElementById('cardDetails');
+        const applePayDetails = document.getElementById('applePayDetails');
+        const eftDetails = document.getElementById('eftDetails');
+
+        const toggleDetails = () => {
+            cardDetails.classList.add('hidden');
+            applePayDetails.classList.add('hidden');
+            eftDetails.classList.add('hidden');
+
+            const selectedValue = paymentTypeSelect.value;
+            if (selectedValue === 'Card') {
+                cardDetails.classList.remove('hidden');
+            } else if (selectedValue === 'Apple Pay') {
+                applePayDetails.classList.remove('hidden');
+            } else if (selectedValue === 'Instant EFT') {
+                eftDetails.classList.remove('hidden');
+            }
+        };
+
+        paymentTypeSelect.addEventListener('change', toggleDetails);
+
+        document.getElementById('paymentForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const paymentType = paymentTypeSelect.value;
+            const paymentData = { paymentType };
+
+            if (paymentType === 'Card') {
+                paymentData.cardNumber = document.getElementById('cardNumber').value;
+                paymentData.expiryDate = document.getElementById('expiryDate').value;
+                paymentData.cvv = document.getElementById('cvv').value;
+            }
+
+            const response = await fetch('https://your-api-endpoint/payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(paymentData),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert('Payment successful!');
+            } else {
+                alert('Error: ' + data.message);
+            }
+        });
+    </script>
 </body>
 </html>

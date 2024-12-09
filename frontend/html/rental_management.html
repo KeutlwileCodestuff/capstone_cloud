@@ -28,13 +28,14 @@
                 <input id="surname" type="text" placeholder="Surname" required><br>
                 <input id="location" type="text" placeholder="Location" required><br>
                 <input id="unit" type="text" placeholder="Unit ID" required><br>
+                <input id="customer" type="text" placeholder="Customer ID" required><br>
                 <button type="button" id="submitBtn">Submit</button>
                 <button type="button" id="cancelBtn">Cancel</button>
             </form>
             <p class="note">NB: Notice periods apply</p>
-            <p>Upload your booking proof for validation:</p>
+            <!-- <p>Upload your booking proof for validation:</p>
             <input type="file" id="bookingFile" accept=".json">
-            <p id="message" style="color: green; font-weight: bold;"></p>
+            <p id="message" style="color: green; font-weight: bold;"></p> -->
         </div>
     </div>
 
@@ -67,7 +68,7 @@
         });
 
         // Submit Button Logic
-        submitBtn.addEventListener('click', () => {
+        submitBtn.addEventListener('click', async () => {
             const name = cancellationForm.name.value.trim();
             const surname = cancellationForm.surname.value.trim();
             const location = cancellationForm.location.value.trim();
@@ -83,8 +84,34 @@
             );
 
             if (match) {
-                message.style.color = "green";
-                message.textContent = "Booking successfully cancelled.";
+                try {
+                    const response = await fetch('https://your-api-endpoint/cancel', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${userToken}` // Ensure userToken is set
+                        },
+                        body: JSON.stringify({
+                            unit_id: unit,
+                            customer_id: match.customer_id,
+                            start_date: match.start_date,
+                            end_date: match.end_date,
+                            payment_method: match.payment_method
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        message.style.color = "green";
+                        message.textContent = "Booking successfully cancelled.";
+                    } else {
+                        message.style.color = "red";
+                        message.textContent = data.error || "Error cancelling booking.";
+                    }
+                } catch (error) {
+                    message.style.color = "red";
+                    message.textContent = "Error cancelling booking.";
+                }
             } else {
                 message.style.color = "red";
                 message.textContent = "No matching booking found.";
