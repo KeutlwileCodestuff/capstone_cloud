@@ -1,8 +1,5 @@
 import json
-import boto3
-
 from datetime import datetime
-
 
 def lambda_handler(event, context):
     body = json.loads(event.get('body', '{}'))
@@ -16,23 +13,15 @@ def lambda_handler(event, context):
     if not (unit_id or start_date or end_date or payment_method):
         return{
             'statusCode':400,
-            'body':json.dumps({'error':'Missing required fields'})
+            'body':json.dumps({'error':'Missing required fieldssss'})
         }
 
     try:
         allowed = overSixMonths(start_date , end_date)
         if allowed:
             return{
-                    'statusCode': 200,
-                    'body': json.dumps({
-                        'message': 'Storage unit cancelled successfully',
-                        'unit_id': unit_id,
-                        'customer_id': customer_id,
-                        'start_date': start_date,
-                        'end_date': end_date
-            })
-        }
-
+                'response':200
+            }
         else:
             return{
                 'statusCode':403,
@@ -45,7 +34,9 @@ def lambda_handler(event, context):
         'body': json.dumps({'error': str(e)})
         }
 
+
 def overSixMonths(start_date , end_date):
+      
     start = datetime.strptime(start_date, '%Y-%m-%d')
     end = datetime.strptime(end_date, '%Y-%m-%d')
 
@@ -54,3 +45,15 @@ def overSixMonths(start_date , end_date):
         return False
     else:
         return True
+
+        #     return{
+        #             'statusCode': 200,
+        #             'body': json.dumps({
+        #                 'message': 'Storage unit cancelled successfully',
+        #                 'unit_id': unit_id,
+        #                 'customer_id': customer_id,
+        #                 'start_date': start_date,
+        #                 'end_date': end_date
+        #     })
+        # }
+       
