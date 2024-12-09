@@ -302,6 +302,16 @@ th {
     border-radius: 5px;
     font-size: 16px;
 }
+
+.payment-box .payment_btn{
+    background-color:white;
+    color: #4992eb;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
 .payment-box button:hover {
     background-color: #e1f5fe;
 }

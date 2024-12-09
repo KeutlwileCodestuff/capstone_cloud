@@ -6,16 +6,53 @@ Resources:
   CognitoUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
+      UserPoolName: serverless-convenient-storage-userpool
       AliasAttributes:
         - email
       AutoVerifiedAttributes:
         - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+
+  # Cognito User Pool Client
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: StorageUserPoolClient
+      UserPoolId: !Ref CognitoUserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ADMIN_NO_SRP_AUTH
+        - CUSTOM_AUTH_FLOW_ONLY
+        - USER_PASSWORD_AUTH
+      AllowedOAuthFlows:
+        - code
+        - implicit
+      AllowedOAuthScopes:
+        - email
+        - openid
+        - profile
+      CallbackURLs:
+        - https://placeholder/callback  # Replace with your actual callback URL once deployed
+      LogoutURLs:
+        - https://placeholder/logout  # Replace with your actual logout URL once deployed
 
   # API Gateway
   NewRestAPI:
     Type: AWS::Serverless::Api
     Properties:
+      Name: Serverless-convenient-self-storage-API
       StageName: Prod
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt CognitoUserPool.Arn
       DefinitionBody:
         openapi: 3.0.1
         info:
@@ -25,6 +62,8 @@ Resources:
         paths:
           /storage/units/book:
             post:
+              security:
+                - CognitoAuthorizer: []
               x-amazon-apigateway-integration:
                 uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${BookStorageUnitFunction.Arn}/invocations"
                 httpMethod: POST
@@ -44,6 +83,8 @@ Resources:
                   description: Server error
           /storage/units:
             get:
+              security:
+                - CognitoAuthorizer: []
               x-amazon-apigateway-integration:
                 uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ListStorageUnitsFunction.Arn}/invocations"
                 httpMethod: GET
