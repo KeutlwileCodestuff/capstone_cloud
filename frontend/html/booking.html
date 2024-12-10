@@ -24,7 +24,6 @@
         <div class="form-container">
             <h2>Select Your Location and Unit:</h2>
             <form id="bookingForm">
-                <!-- Location Dropdown -->
                 <div class="centered-container">
                     <label for="location">Select Location:</label>
                     <select id="location" name="location" required>
@@ -39,7 +38,6 @@
                     </select><br>
                 </div>
 
-                <!-- Unit Selection -->
                 <div id="unit-selection" style="display: none;">
                     <h3>Available Units:</h3>
                     <div class="units">
@@ -60,7 +58,6 @@
                     </div>
                 </div>
 
-                <!-- Contact Information -->   
                 <label for="name">Name:</label>
                 <input type="text" id="name" placeholder="Your Name" required><br> 
                 <label for="surname">Surname:</label>            
@@ -70,7 +67,6 @@
                 <label for="phonenumber">Phone number:</label>
                 <input type="tel" id="phone" placeholder="Your Phone Number" required><br>
 
-                <!-- Additional Booking Information -->
                 <label for="unit_id">Unit ID:</label>
                 <input type="text" id="unit_id" name="unit_id" required><br><br>
 
@@ -90,7 +86,6 @@
                     <option value="apple_pay">Apple Pay</option>
                 </select><br><br>
 
-                <!-- Submit and Cancel Buttons -->
                 <button type="submit" class="submit_btn" id="submitBtn">Book Now</button>
                 <button type="button" id="cancelBtn">Cancel</button>
             </form>
@@ -99,7 +94,6 @@
     </div>
 
     <script>
-        // Set the user token (in a real application, retrieve this from secure storage)
         const userToken = 'eyJraWQiOiJ2ZklyNzZ5bTg2MmhuTjlvZjdvTFplZmVrTEh5ZmhuUEtqRFVxNE1lVmZNPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJmMjA1ODQzNC03MGExLTcwNTgtNGUwZS03YTE1YWNlNDIwNzgiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLmV1LXdlc3QtMS5hbWF6b25hd3MuY29tXC9ldS13ZXN0LTFfZk5sY21aRWIxIiwiY29nbml0bzp1c2VybmFtZSI6ImYyMDU4NDM0LTcwYTEtNzA1OC00ZTBlLTdhMTVhY2U0MjA3OCIsIm9yaWdpbl9qdGkiOiI0MmVmMWU1Yi1kOGE2LTRiZGYtYTIwNy1jYmU0NzY5YTVmNTkiLCJhdWQiOiI2bDQxZW92azhqc21tcGw4cHRzbzM2dWsxaCIsImV2ZW50X2lkIjoiYWI3YmIzMmEtYTI1ZS00NjY2LTkyYTEtNjYyYWE1MzExMWZmIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE3MzM4NDAyMzAsImV4cCI6MTczMzg0MzgzMCwiaWF0IjoxNzMzODQwMjMwLCJqdGkiOiJjMTM2NGZjMy1kN2JiLTQwMzEtOGQwMi1hZTVkOTgwYmI2MGEiLCJlbWFpbCI6InpidXRoZWxlemkwMjNAc3R1ZGVudC53ZXRoaW5rY29kZS5jby56YSJ9.jTSbFTjF1uuf_i-nxL460JUnK3M_ORY0qEul1Dt2sx-a3MxsT4TFCmyvwWPWWoVcHc8BBxzcl715ly9jlPcPo_5MITHATRDY8Iv8BeN9raNYPE_7xete9gyrx1KG3pSwNkJytS0n3lGyMY4nV6Nx50Ztn00uCvKjFNYDL0b11dRKO4X0kFxSPjcKeA3FogDWVj3ZjPDFu3RSFGBB1eGOWoMB4VE2d3tUbJTG-3KnDPNFER3fPirII2qexROYNH-LbqvJklA7rdEsmT6bEnO5ySM1MxBwG8qqm4uuwvtt3r-7TeQZlHD4avx5ecz7BGH1o0-1z2uzVY1T0BYBWiz8Xg';
 
         async function fetchAvailableUnits(location) {
@@ -117,12 +111,10 @@
 
                 const units = await response.json();
 
-                // Filter units based on selected location
                 const availableUnits = units.filter(unit => unit.location === location);
 
-                // Populate the unit selection
                 const unitsContainer = document.querySelector('.units');
-                unitsContainer.innerHTML = ''; // Clear previous units
+                unitsContainer.innerHTML = ''; 
     
                 if (availableUnits.length > 0) {
                     availableUnits.forEach(unit => {
@@ -140,12 +132,11 @@
                 alert('Unable to load available units. Please try again later.');
             }
         }
-    
-        // Show unit selection when location is selected
+
         document.getElementById('location').addEventListener('change', async function () {
             const selectedCity = this.value; // Get the selected city from the dropdown
             const apiUrl = `https://lrsomm2nzk.execute-api.eu-west-1.amazonaws.com/Prod/storage/units?town=${encodeURIComponent(selectedCity)}`;
-        
+
             try {
                 const response = await fetch(apiUrl, {
                     method: 'GET',
@@ -153,7 +144,7 @@
                         'Authorization': `Bearer ${userToken}`
                     }
                 });
-        
+
                 if (response.ok) {
                     const units = await response.json();
                     displayAvailableUnits(units);
@@ -165,7 +156,6 @@
             }
         });
     
-        // Booking form submission
         document.getElementById('bookingForm').addEventListener('submit', async function(event) {
             event.preventDefault();
     
@@ -197,7 +187,6 @@
             }
         });
     
-        // Cancel button functionality
         const cancelBtn = document.getElementById('cancelBtn');
         cancelBtn.addEventListener('click', () => {
             document.getElementById('bookingForm').reset();
@@ -207,28 +196,24 @@
             const unitSelectionDiv = document.getElementById('unit-selection');
             const unitsContainer = unitSelectionDiv.querySelector('.units');
             
-            // Clear existing units
             unitsContainer.innerHTML = '';
         
-            // Populate with new units
             units.forEach((unit) => {
                 const unitInput = document.createElement('input');
                 unitInput.type = 'radio';
-                unitInput.id = unit.id; // Use the unit ID as the input ID
+                unitInput.id = unit.id; 
                 unitInput.name = 'unit';
-                unitInput.value = unit.id; // Use the unit ID as the value
+                unitInput.value = unit.id; 
                 
                 const unitLabel = document.createElement('label');
                 unitLabel.htmlFor = unitInput.id;
                 unitLabel.textContent = `ID: ${unit.id}, Size: ${unit.size}, Price: ${unit.price}, Facility: ${unit.facility}, Town: ${unit.town}, Status: ${unit.status}`;
                 
-                // Append input and label to the container
                 unitsContainer.appendChild(unitInput);
                 unitsContainer.appendChild(unitLabel);
                 unitsContainer.appendChild(document.createElement('br'));
             });
         
-            // Show the unit selection container
             unitSelectionDiv.style.display = 'block';
         }
         
