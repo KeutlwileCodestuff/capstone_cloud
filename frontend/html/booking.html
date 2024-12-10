@@ -29,10 +29,13 @@
                     <label for="location">Select Location:</label>
                     <select id="location" name="location" required>
                         <option value="" disabled selected>Select a Location</option>
-                        <option value="Century City">Century City</option>
-                        <option value="Maynard Mall, Wynberg">Maynard Mall, Wynberg</option>
-                        <option value="Melrose">Melrose</option>
+                        <option value="Johannesburg">Johannesburg</option>
+                        <option value="Pretoria">Pretoria</option>
+                        <option value="Durban">Durban</option>
                         <option value="Rosebank">Rosebank</option>
+                        <option value="Cape Town">Cape Town</option>
+                        <option value="Pietersburg">Pietersburg</option>
+                        <option value="Phalaborwa">Phalaborwa</option>
                     </select><br>
                 </div>
 
@@ -42,12 +45,34 @@
                     <div class="units">
                         <input type="radio" id="unit1" name="unit" value="Unit 1" required>
                         <label for="unit1">Unit 1</label><br>
+
                         <input type="radio" id="unit2" name="unit" value="Unit 2">
                         <label for="unit2">Unit 2</label><br>
+
                         <input type="radio" id="unit3" name="unit" value="Unit 3">
                         <label for="unit3">Unit 3</label><br>
+
+                        <input type="radio" id="unit4" name="unit" value="Unit 4">
+                        <label for="unit4">Unit 4</label><br>
+
+                        <input type="radio" id="unit5" name="unit" value="Unit 5">
+                        <label for="unit5">Unit 5</label><br>
                     </div>
                 </div>
+
+                <!-- Contact Information -->   
+                <label for="name">Name:</label>
+                <input type="text" id="name" placeholder="Your Name" required><br> 
+                <label for="surname">Surname:</label>            
+                <input type="text" id="surname" placeholder="Your Surname" required><br>   
+                <label for="email">Email:</label>         
+                <input type="email" id="email" placeholder="Your Email" required><br>  
+                <label for="phonenumber">Phone number:</label>
+                <input type="tel" id="phone" placeholder="Your Phone Number" required><br>
+
+                <!-- Additional Booking Information -->
+                <label for="unit_id">Unit ID:</label>
+                <input type="text" id="unit_id" name="unit_id" required><br><br>
 
                 <label for="customer_id">Customer ID:</label>
                 <input type="text" id="customer_id" name="customer_id" required><br><br>
@@ -77,15 +102,79 @@
         // Set the user token (in a real application, retrieve this from secure storage)
         const userToken = 'eyJraWQiOiJ2ZklyNzZ5bTg2MmhuTjlvZjdvTFplZmVrTEh5ZmhuUEtqRFVxNE1lVmZNPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJmMjA1ODQzNC03MGExLTcwNTgtNGUwZS03YTE1YWNlNDIwNzgiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLmV1LXdlc3QtMS5hbWF6b25hd3MuY29tXC9ldS13ZXN0LTFfZk5sY21aRWIxIiwiY29nbml0bzp1c2VybmFtZSI6ImYyMDU4NDM0LTcwYTEtNzA1OC00ZTBlLTdhMTVhY2U0MjA3OCIsIm9yaWdpbl9qdGkiOiI0MmVmMWU1Yi1kOGE2LTRiZGYtYTIwNy1jYmU0NzY5YTVmNTkiLCJhdWQiOiI2bDQxZW92azhqc21tcGw4cHRzbzM2dWsxaCIsImV2ZW50X2lkIjoiYWI3YmIzMmEtYTI1ZS00NjY2LTkyYTEtNjYyYWE1MzExMWZmIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE3MzM4NDAyMzAsImV4cCI6MTczMzg0MzgzMCwiaWF0IjoxNzMzODQwMjMwLCJqdGkiOiJjMTM2NGZjMy1kN2JiLTQwMzEtOGQwMi1hZTVkOTgwYmI2MGEiLCJlbWFpbCI6InpidXRoZWxlemkwMjNAc3R1ZGVudC53ZXRoaW5rY29kZS5jby56YSJ9.jTSbFTjF1uuf_i-nxL460JUnK3M_ORY0qEul1Dt2sx-a3MxsT4TFCmyvwWPWWoVcHc8BBxzcl715ly9jlPcPo_5MITHATRDY8Iv8BeN9raNYPE_7xete9gyrx1KG3pSwNkJytS0n3lGyMY4nV6Nx50Ztn00uCvKjFNYDL0b11dRKO4X0kFxSPjcKeA3FogDWVj3ZjPDFu3RSFGBB1eGOWoMB4VE2d3tUbJTG-3KnDPNFER3fPirII2qexROYNH-LbqvJklA7rdEsmT6bEnO5ySM1MxBwG8qqm4uuwvtt3r-7TeQZlHD4avx5ecz7BGH1o0-1z2uzVY1T0BYBWiz8Xg';
 
+        async function fetchAvailableUnits(location) {
+            try {
+                const response = await fetch('https://lrsomm2nzk.execute-api.eu-west-1.amazonaws.com/Prod/storage/units', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch available units.');
+                }
+
+                const units = await response.json();
+
+                // Filter units based on selected location
+                const availableUnits = units.filter(unit => unit.location === location);
+
+                // Populate the unit selection
+                const unitsContainer = document.querySelector('.units');
+                unitsContainer.innerHTML = ''; // Clear previous units
+    
+                if (availableUnits.length > 0) {
+                    availableUnits.forEach(unit => {
+                        const unitOption = `
+                            <input type="radio" id="${unit.id}" name="unit" value="${unit.id}" required>
+                            <label for="${unit.id}">${unit.name} - ${unit.size} (${unit.price} ${unit.currency})</label><br>
+                        `;
+                        unitsContainer.innerHTML += unitOption;
+                    });
+                } else {
+                    unitsContainer.innerHTML = '<p>No available units for this location.</p>';
+                }
+            } catch (error) {
+                console.error('Error fetching units:', error);
+                alert('Unable to load available units. Please try again later.');
+            }
+        }
+    
+        // Show unit selection when location is selected
+        document.getElementById('location').addEventListener('change', async function () {
+            const selectedCity = this.value; // Get the selected city from the dropdown
+            const apiUrl = `https://lrsomm2nzk.execute-api.eu-west-1.amazonaws.com/Prod/storage/units?town=${encodeURIComponent(selectedCity)}`;
+        
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                });
+        
+                if (response.ok) {
+                    const units = await response.json();
+                    displayAvailableUnits(units);
+                } else {
+                    console.error('Failed to fetch units:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error fetching units:', error);
+            }
+        });
+    
+        // Booking form submission
         document.getElementById('bookingForm').addEventListener('submit', async function(event) {
             event.preventDefault();
-
+    
             const unit_id = document.querySelector('input[name="unit"]:checked').value;
             const customer_id = document.getElementById('customer_id').value;
             const start_date = document.getElementById('start_date').value;
             const end_date = document.getElementById('end_date').value;
             const payment_method = document.getElementById('payment_method').value;
-
+    
             try {
                 const response = await fetch('https://lrsomm2nzk.execute-api.eu-west-1.amazonaws.com/Prod/storage/units/book', {
                     method: 'POST',
@@ -95,32 +184,55 @@
                     },
                     body: JSON.stringify({ unit_id, customer_id, start_date, end_date, payment_method })
                 });
-
+    
                 const data = await response.json();
-                console.log(data); // Log the response data for debugging
                 if (response.ok) {
                     alert('Booking successful! Booking ID: ' + data.booking_id);
-                    window.location.href = 'payment.html'; // Redirect to payment page
                 } else {
-                    alert('Error: ' + (data.error || 'Unknown error occurred'));
+                    alert('Error: ' + data.error);
                 }
             } catch (error) {
-                alert('Error: ' + error.message);
+                console.error('Booking error:', error);
+                alert('Failed to book the storage unit. Please try again.');
             }
         });
-
-        // Show unit selection when location is selected
-        document.getElementById('location').addEventListener('change', function() {
-            document.getElementById('unit-selection').style.display = 'block';
-        });
-
-        const bookingForm = document.getElementById('bookingForm');
+    
+        // Cancel button functionality
         const cancelBtn = document.getElementById('cancelBtn');
-
         cancelBtn.addEventListener('click', () => {
-            // Reset the form fields
-            bookingForm.reset();
+            document.getElementById('bookingForm').reset();
         });
+
+        function displayAvailableUnits(units) {
+            const unitSelectionDiv = document.getElementById('unit-selection');
+            const unitsContainer = unitSelectionDiv.querySelector('.units');
+            
+            // Clear existing units
+            unitsContainer.innerHTML = '';
+        
+            // Populate with new units
+            units.forEach((unit) => {
+                const unitInput = document.createElement('input');
+                unitInput.type = 'radio';
+                unitInput.id = unit.id; // Use the unit ID as the input ID
+                unitInput.name = 'unit';
+                unitInput.value = unit.id; // Use the unit ID as the value
+                
+                const unitLabel = document.createElement('label');
+                unitLabel.htmlFor = unitInput.id;
+                unitLabel.textContent = `ID: ${unit.id}, Size: ${unit.size}, Price: ${unit.price}, Facility: ${unit.facility}, Town: ${unit.town}, Status: ${unit.status}`;
+                
+                // Append input and label to the container
+                unitsContainer.appendChild(unitInput);
+                unitsContainer.appendChild(unitLabel);
+                unitsContainer.appendChild(document.createElement('br'));
+            });
+        
+            // Show the unit selection container
+            unitSelectionDiv.style.display = 'block';
+        }
+        
     </script>
+    
 </body>
 </html>
