@@ -1,47 +1,6 @@
 import json
+import boto3
 from datetime import datetime
-
-def lambda_handler(event, context):
-    body = json.loads(event.get('body', '{}'))
-
-    unit_id = body.get('unit_id')
-    customer_id = body.get('customer_id')
-    start_date = body.get('start_date')
-    end_date = body.get('end_date')
-    payment_method = body.get('payment_method')
-
-    if not (unit_id or start_date or end_date or payment_method):
-        return{
-            'statusCode':400,
-            'body':json.dumps({'error':'Missing required fieldssss'})
-        }
-
-    try:
-        allowed = overSixMonths(start_date , end_date)
-        if allowed:
-            return{
-                    'statusCode': 200,
-                    'body': json.dumps({
-                        'message': 'Storage unit cancelled successfully',
-                        'unit_id': unit_id,
-                        'customer_id': customer_id,
-                        'start_date': start_date,
-                        'end_date': end_date
-            })
-        }
-
-        else:
-            return{
-                'statusCode':403,
-                'body':json.dumps({'error':'Not allowed to cancel.'})
-            }
-
-    except Exception as e:
-        return {
-        'statusCode': 500,
-        'body': json.dumps({'error': str(e)})
-        }
-
 
 def overSixMonths(start_date , end_date):
       
@@ -53,3 +12,33 @@ def overSixMonths(start_date , end_date):
         return False
     else:
         return True
+def lambda_handler(event):
+
+    dynamodb = boto3.client("dynamodb" , region_name = "eu-west-1")
+
+    response = dynamodb.scan(TableName = "BookedUnits")
+    tableContent = response["Items"]
+    try:
+        for i in tableContent:
+            if i.get("ID") == event:
+                allowed = overSixMonths(i["startDate"]["S"] , i["endDate"]["S"])
+                if allowed:
+                    tableContent.remove(i)
+                    return{
+                        "status":200 , 
+                        "body":"Rental unit cancelled successfully!"
+                    }
+                    
+                else:
+                    return{
+                        "status":400,
+                        "body":"You are not allowed to cancel rental unit"
+                    }
+                   
+    except Exception as e:
+        return{
+            "status":500,
+            "body":"'error':e"
+        }
+
+# lambda_handler({'S': '02'})
