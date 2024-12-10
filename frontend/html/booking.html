@@ -96,6 +96,22 @@
     </div>
 
     <script>
+        document.getElementById('submitBtn').addEventListener('click', function(event) {
+            const unit_id = document.querySelector('input[name="unit"]:checked');
+            const start_date = document.getElementById('start_date').value;
+            const end_date = document.getElementById('end_date').value;
+            const payment_method = document.getElementById('payment_method').value;
+
+            if (!unit_id || !start_date || !end_date || !payment_method) {
+                alert('Please fill in all required fields.');
+                event.preventDefault();
+                return;
+            }
+
+            // Proceed with form submission
+            document.getElementById('bookingForm').submit();
+        });
+
         document.getElementById('bookingForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
