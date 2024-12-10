@@ -1,73 +1,89 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Transform: 'AWS::Serverless-2016-10-31'
-
 Resources:
-  StorageUnitsTable:
-    Type: 'AWS::DynamoDB::Table'
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
     Properties:
-      TableName: 'StorageUnits'
-      AttributeDefinitions:
-        - AttributeName: 'unit_id'
-          AttributeType: 'S'
-      KeySchema:
-        - AttributeName: 'unit_id'
-          KeyType: 'HASH'
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaDynamoDBPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:Query
+                  - dynamodb:UpdateItem
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - ses:SendEmail
+                Resource: "*"
 
-  # Lambda function to unlock unit
+  LockUnitFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: lockUnit.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      CodeUri: storage_security/
+      Runtime: python3.8
+      MemorySize: 128
+      Timeout: 60
+
   UnlockUnitFunction:
-    Type: 'AWS::Serverless::Function'
+    Type: AWS::Lambda::Function
     Properties:
-      Handler: 'lambda_functions.unlockUnit.lambda_handler'
-      Runtime: 'python3.9'
-      CodeUri: ./backend/lambda_functions
-      Environment:
-        Variables:
-          TABLE_NAME: !Ref StorageUnitsTable
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Path: /unlockUnit
-            Method: post
+      Handler: unlockUnit.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      CodeUri: storage_security/
+      Runtime: python3.8
+      MemorySize: 128
+      Timeout: 60
 
-  # Lambda function to share access to unit
   ShareAccessFunction:
-    Type: 'AWS::Serverless::Function'
+    Type: AWS::Lambda::Function
     Properties:
-      Handler: 'lambda_functions.shareAccess.lambda_handler'
-      Runtime: 'python3.9'
-      CodeUri: ./backend/lambda_functions
-      Environment:
-        Variables:
-          TABLE_NAME: !Ref StorageUnitsTable
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Path: /shareAccess
-            Method: post
+      Handler: shareAccess.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      CodeUri: storage_security/
+      Runtime: python3.8
+      MemorySize: 128
+      Timeout: 60
 
-  # Lambda function to send notifications
-  SendNotificationFunction:
-    Type: 'AWS::Serverless::Function'
+  StorageSecurityApi:
+    Type: AWS::ApiGateway::RestApi
     Properties:
-      Handler: 'lambda_functions.sendNotification.lambda_handler'
-      Runtime: 'python3.9'
-      CodeUri: ./backend/lambda_functions
-      Environment:
-        Variables:
-          SES_EMAIL: 'your_verified_email@example.com'  # Replace with actual verified SES email
+      Name: StorageSecurityAPI
+      Description: API for Storage Security functionality
 
-  # API Gateway for Lambda functions
-  ApiGateway:
-    Type: 'AWS::ApiGateway::RestApi'
+  StorageSecurityApiStage:
+    Type: AWS::ApiGateway::Stage
     Properties:
-      Name: 'StorageSecurityAPI'
+      StageName: dev
+      RestApiId: !Ref StorageSecurityApi
+      DeploymentId: !Ref Deployment
+
+  Deployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: LockUnitFunction
+    Properties:
+      RestApiId: !Ref StorageSecurityApi
 
 Outputs:
-  ApiUrl:
-    Value: !Sub 'https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/'
-    Description: 'API Gateway endpoint URL'
+  LockUnitFunctionName:
+    Value: !Ref LockUnitFunction
+  UnlockUnitFunctionName:
+    Value: !Ref UnlockUnitFunction
+  ShareAccessFunctionName:
+    Value: !Ref ShareAccessFunction
+  NotifyUnlockFunctionName:
+    Value: !Ref NotifyUnlockFunction
+  StorageSecurityApiUrl:
+    Value: !Sub 'https://${StorageSecurityApi}.execute-api.${AWS::Region}.amazonaws.com/dev'
