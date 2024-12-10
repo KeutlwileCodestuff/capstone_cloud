@@ -42,34 +42,12 @@
                     <div class="units">
                         <input type="radio" id="unit1" name="unit" value="Unit 1" required>
                         <label for="unit1">Unit 1</label><br>
-
                         <input type="radio" id="unit2" name="unit" value="Unit 2">
                         <label for="unit2">Unit 2</label><br>
-
                         <input type="radio" id="unit3" name="unit" value="Unit 3">
                         <label for="unit3">Unit 3</label><br>
-
-                        <input type="radio" id="unit4" name="unit" value="Unit 4">
-                        <label for="unit4">Unit 4</label><br>
-
-                        <input type="radio" id="unit5" name="unit" value="Unit 5">
-                        <label for="unit5">Unit 5</label><br>
                     </div>
                 </div>
-
-                <!-- Contact Information -->   
-                <label for="name">Name:</label>
-                <input type="text" id="name" placeholder="Your Name" required><br> 
-                <label for="surname">Surname:</label>            
-                <input type="text" id="surname" placeholder="Your Surname" required><br>   
-                <label for="email">Email:</label>         
-                <input type="email" id="email" placeholder="Your Email" required><br>  
-                <label for="phonenumber">Phone number:</label>
-                <input type="tel" id="phone" placeholder="Your Phone Number" required><br>
-
-                <!-- Additional Booking Information -->
-                <label for="unit_id">Unit ID:</label>
-                <input type="text" id="unit_id" name="unit_id" required><br><br>
 
                 <label for="customer_id">Customer ID:</label>
                 <input type="text" id="customer_id" name="customer_id" required><br><br>
@@ -108,20 +86,26 @@
             const end_date = document.getElementById('end_date').value;
             const payment_method = document.getElementById('payment_method').value;
 
-            const response = await fetch('https://lrsomm2nzk.execute-api.eu-west-1.amazonaws.com/Prod/storage/units/book', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userToken}`
-                },
-                body: JSON.stringify({ unit_id, customer_id, start_date, end_date, payment_method })
-            });
+            try {
+                const response = await fetch('https://lrsomm2nzk.execute-api.eu-west-1.amazonaws.com/Prod/storage/units/book', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userToken}`
+                    },
+                    body: JSON.stringify({ unit_id, customer_id, start_date, end_date, payment_method })
+                });
 
-            const data = await response.json();
-            if (response.ok) {
-                alert('Booking successful! Booking ID: ' + data.booking_id);
-            } else {
-                alert('Error: ' + data.error);
+                const data = await response.json();
+                console.log(data); // Log the response data for debugging
+                if (response.ok) {
+                    alert('Booking successful! Booking ID: ' + data.booking_id);
+                    window.location.href = 'payment.html'; // Redirect to payment page
+                } else {
+                    alert('Error: ' + (data.error || 'Unknown error occurred'));
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
             }
         });
 
@@ -132,12 +116,11 @@
 
         const bookingForm = document.getElementById('bookingForm');
         const cancelBtn = document.getElementById('cancelBtn');
-    
+
         cancelBtn.addEventListener('click', () => {
             // Reset the form fields
             bookingForm.reset();
         });
     </script>
-    
 </body>
 </html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/styles.css">
-    <title>Rental Management</title>
+    <title>Book a Storage Unit</title>
 </head>
 <body>
     <header>
@@ -20,109 +20,106 @@
         </nav>
     </header>
     <div class="container">
-        <h1>Rental Management</h1>
+        <h1>Book a Storage Unit</h1>
         <div class="form-container">
-            <h2>Please fill in below for cancellation:</h2>
-            <form id="cancellationForm">
-                <input id="name" type="text" placeholder="Name" required><br>
-                <input id="surname" type="text" placeholder="Surname" required><br>
-                <input id="location" type="text" placeholder="Location" required><br>
-                <input id="unit" type="text" placeholder="Unit ID" required><br>
-                <input id="customer" type="text" placeholder="Customer ID" required><br>
-                <button type="button" id="submitBtn">Submit</button>
+            <h2>Select Your Location and Unit:</h2>
+            <form id="bookingForm">
+                <!-- Location Dropdown -->
+                <div class="centered-container">
+                    <label for="location">Select Location:</label>
+                    <select id="location" name="location" required>
+                        <option value="" disabled selected>Select a Location</option>
+                        <option value="Century City">Century City</option>
+                        <option value="Maynard Mall, Wynberg">Maynard Mall, Wynberg</option>
+                        <option value="Melrose">Melrose</option>
+                        <option value="Rosebank">Rosebank</option>
+                    </select><br>
+                </div>
+
+                <!-- Unit Selection -->
+                <div id="unit-selection" style="display: none;">
+                    <h3>Available Units:</h3>
+                    <div class="units">
+                        <input type="radio" id="unit1" name="unit" value="Unit 1" required>
+                        <label for="unit1">Unit 1</label><br>
+                        <input type="radio" id="unit2" name="unit" value="Unit 2">
+                        <label for="unit2">Unit 2</label><br>
+                        <input type="radio" id="unit3" name="unit" value="Unit 3">
+                        <label for="unit3">Unit 3</label><br>
+                    </div>
+                </div>
+
+                <label for="customer_id">Customer ID:</label>
+                <input type="text" id="customer_id" name="customer_id" required><br><br>
+
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date" name="start_date" required><br><br>
+
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date" required><br><br>
+
+                <label for="payment_method">Payment Method:</label>
+                <select id="payment_method" name="payment_method" required>
+                    <option value="card">Card</option>
+                    <option value="eft">EFT</option>
+                    <option value="apple_pay">Apple Pay</option>
+                </select><br><br>
+
+                <!-- Submit and Cancel Buttons -->
+                <button type="submit" class="submit_btn" id="submitBtn">Book Now</button>
                 <button type="button" id="cancelBtn">Cancel</button>
             </form>
-            <p class="note">NB: Notice periods apply</p>
-            <!-- <p>Upload your booking proof for validation:</p>
-            <input type="file" id="bookingFile" accept=".json">
-            <p id="message" style="color: green; font-weight: bold;"></p> -->
+            <p class="note">NB: Availability is subject to confirmation.</p>
         </div>
     </div>
 
     <script>
-        const cancellationForm = document.getElementById('cancellationForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const bookingFileInput = document.getElementById('bookingFile');
-        const message = document.getElementById('message');
+        // Set the user token (in a real application, retrieve this from secure storage)
         const userToken = 'eyJraWQiOiJ2ZklyNzZ5bTg2MmhuTjlvZjdvTFplZmVrTEh5ZmhuUEtqRFVxNE1lVmZNPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJmMjA1ODQzNC03MGExLTcwNTgtNGUwZS03YTE1YWNlNDIwNzgiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLmV1LXdlc3QtMS5hbWF6b25hd3MuY29tXC9ldS13ZXN0LTFfZk5sY21aRWIxIiwiY29nbml0bzp1c2VybmFtZSI6ImYyMDU4NDM0LTcwYTEtNzA1OC00ZTBlLTdhMTVhY2U0MjA3OCIsIm9yaWdpbl9qdGkiOiI0MmVmMWU1Yi1kOGE2LTRiZGYtYTIwNy1jYmU0NzY5YTVmNTkiLCJhdWQiOiI2bDQxZW92azhqc21tcGw4cHRzbzM2dWsxaCIsImV2ZW50X2lkIjoiYWI3YmIzMmEtYTI1ZS00NjY2LTkyYTEtNjYyYWE1MzExMWZmIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE3MzM4NDAyMzAsImV4cCI6MTczMzg0MzgzMCwiaWF0IjoxNzMzODQwMjMwLCJqdGkiOiJjMTM2NGZjMy1kN2JiLTQwMzEtOGQwMi1hZTVkOTgwYmI2MGEiLCJlbWFpbCI6InpidXRoZWxlemkwMjNAc3R1ZGVudC53ZXRoaW5rY29kZS5jby56YSJ9.jTSbFTjF1uuf_i-nxL460JUnK3M_ORY0qEul1Dt2sx-a3MxsT4TFCmyvwWPWWoVcHc8BBxzcl715ly9jlPcPo_5MITHATRDY8Iv8BeN9raNYPE_7xete9gyrx1KG3pSwNkJytS0n3lGyMY4nV6Nx50Ztn00uCvKjFNYDL0b11dRKO4X0kFxSPjcKeA3FogDWVj3ZjPDFu3RSFGBB1eGOWoMB4VE2d3tUbJTG-3KnDPNFER3fPirII2qexROYNH-LbqvJklA7rdEsmT6bEnO5ySM1MxBwG8qqm4uuwvtt3r-7TeQZlHD4avx5ecz7BGH1o0-1z2uzVY1T0BYBWiz8Xg';
 
-        let bookingData = [];
+        document.getElementById('bookingForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
 
-        // Load the uploaded JSON file
-        bookingFileInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    try {
-                        bookingData = JSON.parse(e.target.result);
-                        message.style.color = "green";
-                        message.textContent = "Booking file loaded successfully.";
-                    } catch (error) {
-                        message.style.color = "red";
-                        message.textContent = "Error reading booking file.";
-                    }
-                };
-                reader.readAsText(file);
-            }
-        });
+            const unit_id = document.querySelector('input[name="unit"]:checked').value;
+            const customer_id = document.getElementById('customer_id').value;
+            const start_date = document.getElementById('start_date').value;
+            const end_date = document.getElementById('end_date').value;
+            const payment_method = document.getElementById('payment_method').value;
 
-        // Submit Button Logic
-        submitBtn.addEventListener('click', async () => {
-            const name = cancellationForm.name.value.trim();
-            const surname = cancellationForm.surname.value.trim();
-            const location = cancellationForm.location.value.trim();
-            const unit = cancellationForm.unit.value.trim();
+            try {
+                const response = await fetch('https://lrsomm2nzk.execute-api.eu-west-1.amazonaws.com/Prod/storage/units/book', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userToken}`
+                    },
+                    body: JSON.stringify({ unit_id, customer_id, start_date, end_date, payment_method })
+                });
 
-            // Check if the booking data matches the input
-            const match = bookingData.find(
-                (booking) =>
-                    booking.name === name &&
-                    booking.surname === surname &&
-                    booking.location === location &&
-                    booking.unit === unit
-            );
-
-            if (match) {
-                try {
-                    const response = await fetch('https://lrsomm2nzk.execute-api.eu-west-1.amazonaws.com/Prod/cancelling', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${userToken}` // Ensure userToken is set
-                        },
-                        body: JSON.stringify({
-                            unit_id: unit,
-                            customer_id: match.customer_id,
-                            start_date: match.start_date,
-                            end_date: match.end_date,
-                            payment_method: match.payment_method
-                        })
-                    });
-
-                    const data = await response.json();
-                    if (response.ok) {
-                        message.style.color = "green";
-                        message.textContent = "Booking successfully cancelled.";
-                    } else {
-                        message.style.color = "red";
-                        message.textContent = data.error || "Error cancelling booking.";
-                    }
-                } catch (error) {
-                    message.style.color = "red";
-                    message.textContent = "Error cancelling booking.";
+                const data = await response.json();
+                console.log('Response data:', data); // Log the response data for debugging
+                if (response.ok) {
+                    alert('Booking successful! Booking ID: ' + data.booking_id);
+                    window.location.href = 'payment.html'; // Redirect to payment page
+                } else {
+                    alert('Error: ' + (data.message || 'Unknown error occurred'));
                 }
-            } else {
-                message.style.color = "red";
-                message.textContent = "No matching booking found.";
+            } catch (error) {
+                alert('Error: ' + error.message);
             }
         });
 
-        // Cancel Button Logic
+        // Show unit selection when location is selected
+        document.getElementById('location').addEventListener('change', function() {
+            document.getElementById('unit-selection').style.display = 'block';
+        });
+
+        const bookingForm = document.getElementById('bookingForm');
+        const cancelBtn = document.getElementById('cancelBtn');
+
         cancelBtn.addEventListener('click', () => {
-            cancellationForm.reset();
-            message.textContent = "";
+            // Reset the form fields
+            bookingForm.reset();
         });
     </script>
 </body>
