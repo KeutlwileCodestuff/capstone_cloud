@@ -88,7 +88,7 @@
                 </select><br><br>
 
                 <!-- Submit and Cancel Buttons -->
-                <a href="payment.html" class="submit_btn" id="submitBtn">Book Now</a>
+                <button type="submit" class="submit_btn" id="submitBtn">Book Now</button>
                 <button type="button" id="cancelBtn">Cancel</button>
             </form>
             <p class="note">NB: Availability is subject to confirmation.</p>
@@ -96,27 +96,14 @@
     </div>
 
     <script>
-        document.getElementById('submitBtn').addEventListener('click', function(event) {
-            const unit_id = document.querySelector('input[name="unit"]:checked');
-            const start_date = document.getElementById('start_date').value;
-            const end_date = document.getElementById('end_date').value;
-            const payment_method = document.getElementById('payment_method').value;
-
-            if (!unit_id || !start_date || !end_date || !payment_method) {
-                alert('Please fill in all required fields.');
-                event.preventDefault();
-                return;
-            }
-
-            // Proceed with form submission
-            document.getElementById('bookingForm').submit();
-        });
+        // Set the user token (in a real application, retrieve this from secure storage)
+        const userToken = 'eyJraWQiOiJ2ZklyNzZ5bTg2MmhuTjlvZjdvTFplZmVrTEh5ZmhuUEtqRFVxNE1lVmZNPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJmMjA1ODQzNC03MGExLTcwNTgtNGUwZS03YTE1YWNlNDIwNzgiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLmV1LXdlc3QtMS5hbWF6b25hd3MuY29tXC9ldS13ZXN0LTFfZk5sY21aRWIxIiwiY29nbml0bzp1c2VybmFtZSI6ImYyMDU4NDM0LTcwYTEtNzA1OC00ZTBlLTdhMTVhY2U0MjA3OCIsIm9yaWdpbl9qdGkiOiI0MmVmMWU1Yi1kOGE2LTRiZGYtYTIwNy1jYmU0NzY5YTVmNTkiLCJhdWQiOiI2bDQxZW92azhqc21tcGw4cHRzbzM2dWsxaCIsImV2ZW50X2lkIjoiYWI3YmIzMmEtYTI1ZS00NjY2LTkyYTEtNjYyYWE1MzExMWZmIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE3MzM4NDAyMzAsImV4cCI6MTczMzg0MzgzMCwiaWF0IjoxNzMzODQwMjMwLCJqdGkiOiJjMTM2NGZjMy1kN2JiLTQwMzEtOGQwMi1hZTVkOTgwYmI2MGEiLCJlbWFpbCI6InpidXRoZWxlemkwMjNAc3R1ZGVudC53ZXRoaW5rY29kZS5jby56YSJ9.jTSbFTjF1uuf_i-nxL460JUnK3M_ORY0qEul1Dt2sx-a3MxsT4TFCmyvwWPWWoVcHc8BBxzcl715ly9jlPcPo_5MITHATRDY8Iv8BeN9raNYPE_7xete9gyrx1KG3pSwNkJytS0n3lGyMY4nV6Nx50Ztn00uCvKjFNYDL0b11dRKO4X0kFxSPjcKeA3FogDWVj3ZjPDFu3RSFGBB1eGOWoMB4VE2d3tUbJTG-3KnDPNFER3fPirII2qexROYNH-LbqvJklA7rdEsmT6bEnO5ySM1MxBwG8qqm4uuwvtt3r-7TeQZlHD4avx5ecz7BGH1o0-1z2uzVY1T0BYBWiz8Xg';
 
         document.getElementById('bookingForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
             const unit_id = document.querySelector('input[name="unit"]:checked').value;
-            const customer_id = 'some-customer-id'; // Replace with actual customer ID logic
+            const customer_id = document.getElementById('customer_id').value;
             const start_date = document.getElementById('start_date').value;
             const end_date = document.getElementById('end_date').value;
             const payment_method = document.getElementById('payment_method').value;
@@ -125,7 +112,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userToken}` // Ensure userToken is set
+                    'Authorization': `Bearer ${userToken}`
                 },
                 body: JSON.stringify({ unit_id, customer_id, start_date, end_date, payment_method })
             });
