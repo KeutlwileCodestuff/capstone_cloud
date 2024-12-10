@@ -20,27 +20,26 @@
         </nav>
     </header>
 
-    <div class="payment_container">
-        <div class="payment-box">
-            <h1>Payment</h1>
+    <div class="container">
+        <h1>Payment</h1>
+        <div class="form-container">
             <form id="paymentForm">
-                <div class="payment-option">
-                    <label for="paymentType">Payment Type:</label>
-                    <select id="paymentType" name="paymentType" required>
-                        <option value="Card">Card</option>
-                        <option value="Apple Pay">Apple Pay</option>
-                        <option value="Instant EFT">Instant EFT</option>
-                    </select>
-                </div>
+                <label for="paymentType">Payment Type:</label>
+                <select id="paymentType" name="paymentType" required>
+                    <option value="card">Card</option>
+                    <option value="eft">EFT</option>
+                    <option value="apple_pay">Apple Pay</option>
+                </select><br><br>
+
                 <div id="cardDetails" class="payment-details hidden">
                     <label for="cardNumber">Card Number:</label>
-                    <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                    <input type="text" id="cardNumber" name="cardNumber" placeholder="Card Number">
                     
-                    <label for="expiryDate">Expiry Date:</label>
-                    <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" maxlength="5">
+                    <label for="cardExpiry">Card Expiry:</label>
+                    <input type="text" id="cardExpiry" name="cardExpiry" placeholder="MM/YY">
                     
-                    <label for="cvv">CVV:</label>
-                    <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="3">
+                    <label for="cardCVC">Card CVC:</label>
+                    <input type="text" id="cardCVC" name="cardCVC" placeholder="CVC">
                 </div>
                 <div id="applePayDetails" class="payment-details hidden">
                     <label for="applePayToken">Apple Pay Token:</label>
@@ -58,10 +57,8 @@
                 </div>
                 <button type="submit">Add Payment Method</button>
             </form>
-            <button class="payment_btn" id="updatePaymentMethodBtn">Update Payment Method</button>
-            <button class="payment_btn" id="deletePaymentMethodBtn">Delete Payment Method</button>
-            <button class="payment_btn" id="applyDiscountBtn">Apply Discount</button>
-            <a href="home_page.html" class="payment_btn" id="applyDiscountBtn">Close & Exit</a>
+            <button class="payment_btn" id="pay-now">PAY NOW</button>
+            <a href="home_page.html" class="exit_btn" id="applyDiscountBtn">Close & Exit</a>
         </div>
     </div>
 
@@ -79,40 +76,31 @@
             eftDetails.classList.add('hidden');
 
             const selectedValue = paymentTypeSelect.value;
-            if (selectedValue === 'Card') {
+            if (selectedValue === 'card') {
                 cardDetails.classList.remove('hidden');
-            } else if (selectedValue === 'Apple Pay') {
+            } else if (selectedValue === 'apple_pay') {
                 applePayDetails.classList.remove('hidden');
-            } else if (selectedValue === 'Instant EFT') {
+            } else if (selectedValue === 'eft') {
                 eftDetails.classList.remove('hidden');
             }
         };
 
         paymentTypeSelect.addEventListener('change', toggleDetails);
 
-        document.getElementById('paymentForm').addEventListener('submit', async function (event) {
+        document.getElementById('paymentForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
+            const paymentMethodId = 'unique-payment-method-id'; // Generate a unique ID for the payment method
+            const customerId = 'customer-id'; // Replace with actual customer ID
             const paymentType = paymentTypeSelect.value;
-            const paymentDetails = {};
-
-            if (paymentType === 'Card') {
-                paymentDetails.cardNumber = document.getElementById('cardNumber').value;
-                paymentDetails.expiryDate = document.getElementById('expiryDate').value;
-                paymentDetails.cvv = document.getElementById('cvv').value;
-            } else if (paymentType === 'Apple Pay') {
-                paymentDetails.applePayToken = document.getElementById('applePayToken').value;
-            } else if (paymentType === 'Instant EFT') {
-                paymentDetails.bankAccount = document.getElementById('bankAccount').value;
-                paymentDetails.bankName = document.getElementById('bankName').value;
-                paymentDetails.transactionReference = document.getElementById('transactionReference').value;
-            }
-
-            const paymentData = {
-                paymentMethodId: 'some-payment-method-id', // Replace with actual logic to generate or retrieve paymentMethodId
-                customerId: 'some-customer-id', // Replace with actual customer ID logic
-                paymentType,
-                paymentDetails
+            const paymentDetails = {
+                cardNumber: document.getElementById('cardNumber').value,
+                cardExpiry: document.getElementById('cardExpiry').value,
+                cardCVC: document.getElementById('cardCVC').value,
+                applePayToken: document.getElementById('applePayToken').value,
+                bankAccount: document.getElementById('bankAccount').value,
+                bankName: document.getElementById('bankName').value,
+                transactionReference: document.getElementById('transactionReference').value
             };
 
             try {
@@ -120,115 +108,55 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${userToken}` // Ensure userToken is set
+                        'Authorization': `Bearer ${userToken}`
                     },
-                    body: JSON.stringify(paymentData)
+                    body: JSON.stringify({ paymentMethodId, customerId, paymentType, paymentDetails })
                 });
 
                 const data = await response.json();
-                if (response.ok) {
+                console.log('Add payment method response:', data);
+                if (response.ok && data.success) {
                     alert('Payment method added successfully!');
                 } else {
-                    alert('Error: ' + data.message);
+                    alert('Failed to add payment method: ' + (data.message || 'Unknown error occurred'));
                 }
             } catch (error) {
                 alert('Error: ' + error.message);
             }
         });
 
-        document.getElementById('updatePaymentMethodBtn').addEventListener('click', async function () {
-            const paymentMethodId = prompt('Enter Payment Method ID to update:');
-            const paymentType = paymentTypeSelect.value;
-            const paymentDetails = {};
-
-            if (paymentType === 'Card') {
-                paymentDetails.cardNumber = document.getElementById('cardNumber').value;
-                paymentDetails.expiryDate = document.getElementById('expiryDate').value;
-                paymentDetails.cvv = document.getElementById('cvv').value;
-            } else if (paymentType === 'Apple Pay') {
-                paymentDetails.applePayToken = document.getElementById('applePayToken').value;
-            } else if (paymentType === 'Instant EFT') {
-                paymentDetails.bankAccount = document.getElementById('bankAccount').value;
-                paymentDetails.bankName = document.getElementById('bankName').value;
-                paymentDetails.transactionReference = document.getElementById('transactionReference').value;
-            }
-
-            const paymentData = {
-                customerId: 'some-customer-id', // Replace with actual customer ID logic
-                paymentType,
-                paymentDetails
-            };
-
+        document.getElementById('pay-now').addEventListener('click', async function() {
             try {
-                const response = await fetch(`https://lrsomm2nzk.execute-api.eu-west-1.amazonaws.com/Prod/payment/${paymentMethodId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${userToken}` // Ensure userToken is set
-                    },
-                    body: JSON.stringify(paymentData)
-                });
+                const paymentMethodId = '6789'; // Use the same ID as above
+                const customerId = '1234'; // Replace with actual customer ID
+                const paymentType = paymentTypeSelect.value;
+                const paymentDetails = {
+                    cardNumber: document.getElementById('cardNumber').value,
+                    cardExpiry: document.getElementById('cardExpiry').value,
+                    cardCVC: document.getElementById('cardCVC').value,
+                    applePayToken: document.getElementById('applePayToken').value,
+                    bankAccount: document.getElementById('bankAccount').value,
+                    bankName: document.getElementById('bankName').value,
+                    transactionReference: document.getElementById('transactionReference').value
+                };
 
-                const data = await response.json();
-                if (response.ok) {
-                    alert('Payment method updated successfully!');
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
-        });
-
-        document.getElementById('deletePaymentMethodBtn').addEventListener('click', async function () {
-            const paymentMethodId = prompt('Enter Payment Method ID to delete:');
-
-            try {
-                const response = await fetch(`https://9m8bcav2ui.execute-api.eu-west-1.amazonaws.com/Prod/payment/${paymentMethodId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${userToken}` // Ensure userToken is set
-                    }
-                });
-
-                const data = await response.json();
-                if (response.ok) {
-                    alert('Payment method deleted successfully!');
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
-        });
-
-        document.getElementById('applyDiscountBtn').addEventListener('click', async function () {
-            const billingId = prompt('Enter Billing ID:');
-            const facilityType = prompt('Enter Facility Type:');
-            const discountType = prompt('Enter Discount Type:');
-
-            const discountData = {
-                billingId,
-                facilityType,
-                discountType
-            };
-
-            try {
-                const response = await fetch('https://lrsomm2nzk.execute-api.eu-west-1.amazonaws.com/Prod/discount', {
+                const response = await fetch('https://lrsomm2nzk.execute-api.eu-west-1.amazonaws.com/Prod/payment-methods', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${userToken}` // Ensure userToken is set
+                        'Authorization': `Bearer ${userToken}`
                     },
-                    body: JSON.stringify(discountData)
+                    body: JSON.stringify({ paymentMethodId, customerId, paymentType, paymentDetails })
                 });
 
                 const data = await response.json();
-                if (response.ok) {
-                    alert(`Discount applied successfully! Original Amount: ${data.originalAmount}, Discounted Amount: ${data.discountedAmount}`);
+                console.log('Payment response:', data);
+                if (response.ok && data.success) {
+                    alert('Payment successful! Generating invoice...');
+                    // Generate and send the dummy invoice
+                    window.location.href = '100-Zandile-Buthelezi.pdf'; // Replace with actual logic to generate/send the invoice
                 } else {
-                    alert('Error: ' + data.message);
+                    alert('Payment failed: ' + (data.message || 'Unknown error occurred'));
                 }
             } catch (error) {
                 alert('Error: ' + error.message);
