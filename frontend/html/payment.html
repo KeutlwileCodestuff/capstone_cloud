@@ -116,7 +116,7 @@
             };
 
             try {
-                const response = await fetch('https://9m8bcav2ui.execute-api.eu-west-1.amazonaws.com/Prod/payment', {
+                const response = await fetch('https://lrsomm2nzk.execute-api.eu-west-1.amazonaws.com/Prod/payment-methods', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -160,7 +160,7 @@
             };
 
             try {
-                const response = await fetch(`https://9m8bcav2ui.execute-api.eu-west-1.amazonaws.com/Prod/payment/${paymentMethodId}`, {
+                const response = await fetch(`https://lrsomm2nzk.execute-api.eu-west-1.amazonaws.com/Prod/payment/${paymentMethodId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -215,7 +215,7 @@
             };
 
             try {
-                const response = await fetch('https://9m8bcav2ui.execute-api.eu-west-1.amazonaws.com/Prod/discount', {
+                const response = await fetch('https://lrsomm2nzk.execute-api.eu-west-1.amazonaws.com/Prod/discount', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
