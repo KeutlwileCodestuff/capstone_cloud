@@ -4,7 +4,6 @@ from uuid import uuid4
 from datetime import datetime
 from decimal import Decimal
 
-
 dynamodb = boto3.resource('dynamodb', 'eu-west-1')
 
 UNITS_TABLE = "StorageUnits"
@@ -28,6 +27,11 @@ def lambda_handler(event, context):
     except json.JSONDecodeError as e:
         return {
             'statusCode': 400,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST',
+                'Access-Control-Allow-Headers': 'Content-Type,Authorization'
+            },
             'body': json.dumps({'error': 'Invalid JSON body', 'details': str(e)})
         }
 
@@ -40,6 +44,11 @@ def lambda_handler(event, context):
     if not (unit_id and customer_id and start_date and end_date and payment_method):
         return {
             'statusCode': 400,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST',
+                'Access-Control-Allow-Headers': 'Content-Type,Authorization'
+            },
             'body': json.dumps({'error': 'Missing required fields'})
         }
     
@@ -50,6 +59,11 @@ def lambda_handler(event, context):
         if start >= end:
             return {
                 'statusCode': 400,
+                'headers': {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'POST',
+                    'Access-Control-Allow-Headers': 'Content-Type,Authorization'
+                },
                 'body': json.dumps({'error': 'Invalid date range'})
             }
         
@@ -62,6 +76,11 @@ def lambda_handler(event, context):
         if not unit or unit['status'] != 'Available':
             return {
                 'statusCode': 400,
+                'headers': {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'POST',
+                    'Access-Control-Allow-Headers': 'Content-Type,Authorization'
+                },
                 'body': json.dumps({'error': 'Unit not available'})
             }
         
@@ -88,6 +107,11 @@ def lambda_handler(event, context):
         
         return {
             'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST',
+                'Access-Control-Allow-Headers': 'Content-Type,Authorization'
+            },
             'body': json.dumps({
                 'message': 'Storage unit booked successfully',
                 'booking_id': booking_id,
@@ -99,5 +123,10 @@ def lambda_handler(event, context):
     except Exception as e:
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST',
+                'Access-Control-Allow-Headers': 'Content-Type,Authorization'
+            },
             'body': json.dumps({'error': str(e)})
         }
