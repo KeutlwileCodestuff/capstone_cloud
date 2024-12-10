@@ -1,89 +1,75 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
 Resources:
-  LambdaExecutionRole:
-    Type: AWS::IAM::Role
+  UnlockUnitFunction:
+    Type: AWS::Serverless::Function
     Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
+      Handler: unlock_unit.lambda_handler
+      Runtime: python3.8
+      CodeUri: src/unlock_unit/
+      MemorySize: 128
+      Timeout: 10
       Policies:
-        - PolicyName: LambdaDynamoDBPolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - dynamodb:PutItem
-                  - dynamodb:GetItem
-                  - dynamodb:Query
-                  - dynamodb:UpdateItem
-                Resource: "*"
-              - Effect: Allow
-                Action:
-                  - ses:SendEmail
-                Resource: "*"
+        - AmazonDynamoDBFullAccess
+        - AmazonSESFullAccess
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: StorageUnits
+          SES_REGION: eu-west-1
 
   LockUnitFunction:
-    Type: AWS::Lambda::Function
+    Type: AWS::Serverless::Function
     Properties:
-      Handler: lockUnit.handler
-      Role: !GetAtt LambdaExecutionRole.Arn
-      CodeUri: storage_security/
+      Handler: lock_unit.lambda_handler
       Runtime: python3.8
+      CodeUri: src/lock_unit/
       MemorySize: 128
-      Timeout: 60
-
-  UnlockUnitFunction:
-    Type: AWS::Lambda::Function
-    Properties:
-      Handler: unlockUnit.handler
-      Role: !GetAtt LambdaExecutionRole.Arn
-      CodeUri: storage_security/
-      Runtime: python3.8
-      MemorySize: 128
-      Timeout: 60
+      Timeout: 10
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: StorageUnits
 
   ShareAccessFunction:
-    Type: AWS::Lambda::Function
+    Type: AWS::Serverless::Function
     Properties:
-      Handler: shareAccess.handler
-      Role: !GetAtt LambdaExecutionRole.Arn
-      CodeUri: storage_security/
+      Handler: share_access.lambda_handler
       Runtime: python3.8
+      CodeUri: src/share_access/
       MemorySize: 128
-      Timeout: 60
+      Timeout: 10
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: SharedAccess
 
-  StorageSecurityApi:
-    Type: AWS::ApiGateway::RestApi
+  StorageUnitsTable:
+    Type: AWS::DynamoDB::Table
     Properties:
-      Name: StorageSecurityAPI
-      Description: API for Storage Security functionality
+      TableName: StorageUnits
+      AttributeDefinitions:
+        - AttributeName: unit_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: unit_id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
 
-  StorageSecurityApiStage:
-    Type: AWS::ApiGateway::Stage
+  SharedAccessTable:
+    Type: AWS::DynamoDB::Table
     Properties:
-      StageName: dev
-      RestApiId: !Ref StorageSecurityApi
-      DeploymentId: !Ref Deployment
-
-  Deployment:
-    Type: AWS::ApiGateway::Deployment
-    DependsOn: LockUnitFunction
-    Properties:
-      RestApiId: !Ref StorageSecurityApi
-
-Outputs:
-  LockUnitFunctionName:
-    Value: !Ref LockUnitFunction
-  UnlockUnitFunctionName:
-    Value: !Ref UnlockUnitFunction
-  ShareAccessFunctionName:
-    Value: !Ref ShareAccessFunction
-  NotifyUnlockFunctionName:
-    Value: !Ref NotifyUnlockFunction
-  StorageSecurityApiUrl:
-    Value: !Sub 'https://${StorageSecurityApi}.execute-api.${AWS::Region}.amazonaws.com/dev'
+      TableName: SharedAccess
+      AttributeDefinitions:
+        - AttributeName: unit_id
+          AttributeType: S
+        - AttributeName: shared_user_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: unit_id
+          KeyType: HASH
+        - AttributeName: shared_user_id
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
