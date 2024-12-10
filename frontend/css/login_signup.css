@@ -42,6 +42,8 @@
   pointer-events: none;
 }
 
+
+
 header {
   font-size: 28px;
   font-weight: 600;
@@ -81,6 +83,23 @@ form {
   border-bottom-width: 2px;
 }
 
+.login_button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #8b8b8b;
+  border-radius: 2px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.login_button:hover {
+  background-color: white;
+}
+
 .eye-icon {
   position: absolute;
   top: 50%;
@@ -92,15 +111,15 @@ form {
   padding: 5px;
 }
 
-.field button {
-  color: #fff;
-  background-color: #0171d3;
+.field a {
+  color:white;
   transition: all 0.3s ease;
   cursor: pointer;
+  margin-left: 5px;
 }
 
-.field button:hover {
-  background-color: #016dcb;
+.field a:hover {
+  background-color: white;
 }
 
 .form-link {

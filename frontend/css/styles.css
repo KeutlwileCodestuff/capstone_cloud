@@ -93,6 +93,19 @@ button:hover {
     width: 100%;
     max-width: 300px;
 }
+
+#submitBtn {
+    color: white;        
+    background-color: #357ab8; 
+    padding: 10px 20px;    
+    text-decoration: none; 
+    border-radius: 5px;   
+}
+
+
+#submitBtn:hover {
+    background-color: #0c2d4a;
+}
 /* end of rental management && booking styles */
 
 

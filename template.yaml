@@ -39,6 +39,15 @@ Resources:
       BillingMode: PAY_PER_REQUEST
     Metadata:
       SamResourceId: StorageBookingsTable
+
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-website
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+   
   RestAPI:
     Type: AWS::Serverless::Api
     Properties:
@@ -471,3 +480,6 @@ Outputs:
       Fn::Sub: aws cognito-idp initiate-auth --auth-flow USER_PASSWORD_AUTH --client-id
         ${UserPoolClient} --auth-parameters USERNAME=<user@example.com>,PASSWORD=<password>
         --query "AuthenticationResult.IdToken" --output text
+  WebsiteURL:
+    Value: !GetAtt MyS3Bucket.WebsiteURL
+    Description: URL for website hosted on S3
